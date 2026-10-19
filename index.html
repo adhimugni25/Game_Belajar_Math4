@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Petualangan Pola Bilangan – Kelas 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#22305a;--ac:#ff5c93;--paper:#fff9e8}
+*{box-sizing:border-box}
+body{margin:0;font-family:Fredoka,"Comic Sans MS",system-ui,sans-serif;color:var(--ink);font-size:18px;line-height:1.45;
+background:repeating-linear-gradient(var(--paper) 0 31px,#cfe3f5 31px 32px);min-height:100vh}
+body::before{content:"";position:fixed;left:46px;top:0;bottom:0;width:2px;background:#ff9aa8;opacity:.6}
+.wrap{max-width:960px;margin:0 auto;padding:16px 16px 40px 64px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:clamp(24px,4vw,36px);margin:0;font-weight:700}
+#score{background:#ffc93c;border:3px solid var(--ink);border-radius:999px;padding:4px 16px;font-weight:700;box-shadow:3px 3px 0 var(--ink)}
+nav{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+nav button,.btn{font:inherit;font-weight:600;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:14px;padding:6px 14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .1s,box-shadow .1s}
+nav button:hover,.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+nav button.on{background:var(--ac);color:#fff}
+.btn{background:var(--ac);color:#fff;font-size:20px;padding:10px 22px}
+:focus-visible{outline:4px solid #4f8cff;outline-offset:2px}
+.box{background:#fff;border:3px solid var(--ink);border-radius:18px;padding:14px 18px;margin:14px 0;box-shadow:5px 5px 0 var(--ink)}
+.box h2{margin:0 0 4px;font-size:22px;color:var(--ac)}
+.box p{margin:4px 0}
+.pat{display:flex;flex-wrap:wrap;align-items:center;gap:6px;justify-content:center;margin:18px 0}
+.sus{width:118px;min-height:150px;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:6px;text-align:center;display:flex;flex-direction:column}
+.sus b{font-size:15px}
+.sus .ic{flex:1;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:1px;font-size:17px;line-height:1.15;padding:2px 0}
+.sus em{font-style:normal;font-size:14px;font-weight:600;min-height:20px}
+.sus i{font-style:normal}
+.qm{font-size:48px;font-weight:700;color:#b9c2dd}
+.slot{border-style:dashed}
+.sus.slot.on,.slot.on{border-color:var(--ac);background:#fff4f8;animation:pulse 1.2s infinite}
+.slot.hov{background:#fff2b8!important;transform:scale(1.06)}
+span.slot{display:inline-block;min-width:170px;padding:0 12px;border:3px dashed #9aa6c8;border-radius:12px;color:#8793b5;text-align:center;vertical-align:middle}
+span.slot.on{color:var(--ac)}
+span.fill{display:inline-block;padding:0 12px;border-radius:12px;background:var(--ac);color:#fff;font-weight:600}
+.ar{min-width:46px;height:46px;border-radius:50%;background:#e9edf8;color:#8793b5;display:grid;place-items:center;font-weight:700;font-size:15px;border:3px solid var(--ink)}
+.ar.on{background:var(--ac);color:#fff}
+.ar.pop{animation:pop .5s backwards}
+.pi{animation:pop .45s backwards}
+.qa ol{list-style:none;margin:0;padding:0}
+.qa li{padding:8px 10px;border-radius:12px;margin:4px 0;opacity:.45}
+.qa li.cur{opacity:1;background:#fff4c9}
+.qa li.ok{opacity:1}
+.qa li.ok::after{content:" ✅"}
+.tray .chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.chip{touch-action:none;user-select:none;cursor:grab;background:var(--ac);color:#fff;font-weight:700;font-size:22px;padding:8px 20px;border:3px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 var(--ink)}
+.chip.sel{outline:4px solid #4f8cff;transform:translateY(-3px)}
+.chip.lift{opacity:.3}
+.chip.no{opacity:.3;text-decoration:line-through;pointer-events:none}
+.ghost{position:fixed;z-index:99;pointer-events:none;transform:rotate(-6deg) scale(1.1)}
+.ex{background:#eafaf1;min-height:90px}
+.ex.bad{background:#ffe9ec;animation:shake .4s}
+.eq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:30px;font-weight:700;margin:6px 0}
+.eq span{background:#fff;border:3px solid var(--ink);border-radius:12px;padding:0 14px;animation:pop .5s backwards}
+.eq .st{background:var(--ac);color:#fff;border-radius:999px;font-size:20px}
+.fade{animation:up .6s backwards}
+.done-card{text-align:center}
+.done-card .big{font-size:48px}
+.cf{position:fixed;bottom:-20px;z-index:98;font-size:30px;animation:fly 2.2s ease-out forwards;pointer-events:none}
+footer{text-align:center;margin-top:20px}
+.toast{position:fixed;left:50%;top:38%;z-index:100;transform:translate(-50%,-50%);font-size:clamp(34px,8vw,64px);font-weight:700;color:#fff;background:#22b573;border:4px solid var(--ink);border-radius:24px;padding:8px 28px;box-shadow:6px 6px 0 var(--ink);pointer-events:none;animation:toast 1.4s forwards}
+.sp{position:fixed;z-index:99;font-size:26px;pointer-events:none;animation:spark .95s ease-out forwards}
+.flash{animation:flash 1s}
+#snd{font-size:18px;padding:2px 12px;background:#fff;color:var(--ink)}
+@keyframes toast{0%{transform:translate(-50%,-50%) scale(0) rotate(-8deg)}20%{transform:translate(-50%,-50%) scale(1.2) rotate(3deg)}35%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-90%) scale(1)}}
+@keyframes spark{to{transform:translate(var(--dx),var(--dy)) scale(.3) rotate(240deg);opacity:0}}
+@keyframes flash{0%{box-shadow:0 0 0 0 rgba(34,181,115,.9);background:#c9f7de}100%{box-shadow:0 0 0 26px rgba(34,181,115,0)}}
+#prt{display:none}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(255,92,147,.25)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes up{from{opacity:0;transform:translateY(12px)}}
+@keyframes fly{to{transform:translateY(-105vh) rotate(360deg);opacity:.8}}
+@media(max-width:600px){body::before{display:none}.wrap{padding:12px}.sus{width:104px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff;font-size:13px}body::before,.wrap,.cf{display:none!important}#prt{display:block;padding:0 8px}
+#prt h2{margin:14px 0 2px}#prt li{margin:6px 0}#prt h2{break-after:avoid}#prt section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>🧮 Petualangan Pola Bilangan</h1><div style="display:flex;gap:10px;align-items:center"><button id="snd" class="btn" onclick="toggleSnd()" aria-label="Suara">🔊</button><div id="score" aria-live="polite"></div></div></header>
+  <nav id="tabs" aria-label="Pilih soal"></nav>
+  <main id="stage"></main>
+  <footer><button class="btn" style="font-size:16px;padding:6px 16px" onclick="window.print()">🖨️ Simpan sebagai PDF</button></footer>
+</div>
+<div id="prt"></div>
+
+<script>
+const A=['bertambah 3','bertambah 4','berkurang 3','berkurang 4'];
+const S=[
+{t:'Pola Gambar Membesar',ic:'🌸',nm:'bunga',W:'Susunan',n:[3,6,9],d:3,sg:1,ac:'#ff5c93',u:'gambar bunga',o:[[10,12,13,15],[12,15,16,18]],
+ story:'Rina membuat hiasan berbentuk bunga pada selembar kertas. Pada susunan pertama terdapat 3 gambar bunga, susunan kedua terdapat 6 gambar bunga, dan susunan ketiga terdapat 9 gambar bunga. Jika pola tersebut berlanjut secara teratur:'},
+{t:'Pola Gambar Mengecil',ic:'⭐',nm:'bintang',W:'Susunan',n:[24,20,16],d:4,sg:-1,ac:'#e89400',u:'gambar bintang',o:[[10,12,14,20],[4,8,10,12]],
+ story:'Doni menyusun gambar bintang untuk menghias buku tugasnya. Pada susunan pertama terdapat 24 gambar bintang, susunan kedua terdapat 20 gambar bintang, dan susunan ketiga terdapat 16 gambar bintang. Jika pola tersebut berlanjut secara teratur:'},
+{t:'Pola Gambar Membesar',ic:'🔺',nm:'segitiga',W:'Urutan',n:[5,9,13],d:4,sg:1,ac:'#0fae9e',u:'gambar segitiga',o:[[16,17,18,21],[17,20,21,25]],
+ story:'Salsa membuat pola gambar berbentuk segitiga untuk tugas Matematika. Pada urutan pertama terdapat 5 gambar segitiga, urutan kedua terdapat 9 gambar segitiga, dan urutan ketiga terdapat 13 gambar segitiga. Jika pola tersebut berlanjut secara teratur:'},
+{t:'Pola Gambar Mengecil',ic:'💖',nm:'stiker',W:'Kelompok',n:[30,25,20],d:5,sg:-1,ac:'#7c5cff',u:'stiker',oa:['bertambah 5','berkurang 5','berkurang 4','bertambah 6'],o:[[10,15,16,25],[5,10,12,15]],
+ pa:'Pola berkurang 5 stiker pada setiap kelompok.',
+ story:'Maya memiliki 30 stiker berbentuk hati. Ia menempelkan stiker tersebut dalam beberapa kelompok. Kelompok pertama berisi 30 stiker, kelompok kedua 25 stiker, dan kelompok ketiga 20 stiker. Jika pola tersebut berlanjut secara teratur:'},
+{t:'Pola Gambar Membesar',ic:'🧱',nm:'balok',W:'Susunan',n:[4,10,16],d:6,sg:1,ac:'#f0662b',u:'balok',oa:['bertambah 4','bertambah 5','bertambah 6','berkurang 6'],o:[[20,22,24,26],[26,28,30,32]],
+ pa:'Pola bertambah 6 balok pada setiap susunan.',
+ story:'Pak Guru menyusun balok untuk kegiatan Matematika. Susunan pertama terdiri dari 4 balok, susunan kedua terdiri dari 10 balok, dan susunan ketiga terdiri dari 16 balok. Jika pola tersebut berlanjut secara teratur:'}
+];
+S.forEach(s=>{
+  s.op=s.sg>0?'+':'−'; s.rl=s.op+s.d; s.rule=(s.sg>0?'bertambah ':'berkurang ')+s.d;
+  const a=s.n[2]+s.sg*s.d; s.a=[a,a+s.sg*s.d]; s.ans=[s.rule,s.a[0],s.a[1]]; s.opts=[s.oa||A,...s.o];
+  const w=s.W.toLowerCase();
+  s.q=['Apa aturan perubahan pola tersebut?',`Berapa jumlah ${s.u} pada ${w} keempat?`,`Berapa jumlah ${s.u} pada ${w} kelima?`];
+  s.hint=['Bandingkan jumlah gambar pertama dan kedua. Naik atau turun? Selisihnya berapa?',
+    `Mulai dari jumlah ${w} ketiga, lalu pakai aturan pola satu kali.`,`Mulai dari jumlah ${w} keempat, lalu pakai aturan pola sekali lagi.`];
+  s.pb=[s.pa||`Pola ${s.rule} ${s.u}.`,
+    `${s.W} keempat: ${s.n[2]} ${s.op} ${s.d} = ${s.a[0]} ${s.u}.`,
+    `${s.W} kelima: ${s.a[0]} ${s.op} ${s.d} = ${s.a[1]} ${s.u}.`];
+});
+const st=S.map(()=>({q:0,tries:[0,0,0],ok:[0,0,0],bad:[[],[],[]],msg:null}));
+let cur=0,fresh=null,sel=null;
+const $=s=>document.querySelector(s);
+
+function score(){return st.filter(t=>t.ok.every(Boolean)&&t.tries.every(x=>x==0)).length}
+function icons(s,v,anim){return Array.from({length:v},(_,i)=>`<i class="${anim?'pi':''}" style="animation-delay:${i*.07}s">${s.ic}</i>`).join('')}
+function eqHtml(s,q){
+  const tk=q==0?[s.n[0],s.rl,s.n[1],s.rl,s.n[2]]:[q==1?s.n[2]:s.a[0],s.rl,'= '+s.a[q-1]];
+  return `<div class="eq">${tk.map((x,i)=>`<span class="${i%2&&q==0||i==1&&q>0?'st':''}" style="animation-delay:${i*.35}s">${x}</span>`).join('')}</div>
+  <p class="fade" style="animation-delay:${tk.length*.35}s">${s.pb[q]}</p>`;
+}
+function render(){
+  $('#score').textContent='⭐ '+score()+' / 5';
+  $('#tabs').innerHTML=S.map((s,i)=>`<button class="${cur==i?'on':''}" style="${cur==i?'--ac:'+s.ac:''}" onclick="go(${i})">${s.ic} Soal ${i+1}${st[i].ok[2]?' ✅':''}</button>`).join('')
+    +`<button class="${cur==S.length?'on':''}" onclick="go(S.length)">🏆 Hasil</button>`;
+  sel=null;
+  const stage=$('#stage');
+  if(cur==S.length){
+    const sc=score();
+    stage.innerHTML=`<section class="box done-card"><div class="big">${sc>=4?'🏆':sc>=2?'🎉':'💪'}</div><h2>Skor kamu: ${sc} dari 5 poin</h2>
+    <p>${'⭐'.repeat(sc)+'☆'.repeat(5-sc)}</p><p>Setiap soal bernilai 1 poin, diberikan jika pertanyaan a, b, dan c benar semua pada percobaan pertama. Kalau benar semua, nilaimu 5 poin!</p>
+    <p><button class="btn" onclick="reset()">Main lagi 🔄</button></p></section>`;
+    return;
+  }
+  const s=S[cur],t=st[cur];
+  stage.style.setProperty('--ac',s.ac);
+  let h=`<section class="box"><h2>Soal ${cur+1}: ${s.t}</h2><p>${s.story}</p></section><section class="pat" aria-label="Pola gambar">`;
+  for(let i=0;i<5;i++){
+    if(i)h+=`<div class="ar ${t.ok[0]?'on':''} ${fresh===0?'pop':''}" style="animation-delay:${(i-1)*.3}s">${t.ok[0]?s.rl:'?'}</div>`;
+    const known=i<3,q=i-2,done=known||t.ok[q],v=known?s.n[i]:s.a[q-1];
+    const active=!done&&t.q==q;
+    h+=`<div class="sus ${done?'':'slot'} ${active?'on':''} ${fresh===q&&!known?'flash':''}" ${done?'':`data-q="${q}"`}><b>${s.W} ${i+1}</b>
+    <div class="ic">${done?icons(s,v,fresh===q&&!known):'<span class="qm">?</span>'}</div><em>${done?v+' '+s.nm:''}</em></div>`;
+  }
+  h+='</section><section class="box qa"><ol>';
+  const L='abc';
+  s.q.forEach((q,k)=>{
+    const c=t.ok[k]?'ok':t.q==k?'cur':'';
+    let extra='';
+    if(k==0)extra=t.ok[0]?` <span class="fill">${s.rule}</span>`:` <span class="slot ${t.q==0?'on':''}" ${t.q==0?'data-q="0"':''}>Pola … </span>`;
+    else if(t.ok[k])extra=` <span class="fill">${s.a[k-1]}</span>`;
+    h+=`<li class="${c}${fresh===k?' flash':''}"><b>${L[k]}.</b> ${q}${extra}</li>`;
+  });
+  h+='</ol></section>';
+  if(t.q<3){
+    h+=`<section class="box tray"><p><b>Jawaban ${L[t.q]}:</b> seret ke kotak yang menyala ✨ <small>(atau ketuk jawaban, lalu ketuk kotaknya)</small></p><div class="chips" id="chips">
+    ${s.opts[t.q].map(o=>`<div class="chip ${t.bad[t.q].includes(String(o))?'no':''}" data-v="${o}" tabindex="0" role="button">${o}</div>`).join('')}</div></section>`;
+  } else {
+    h+=`<section class="box" style="text-align:center"><p><b>Hebat! 🎉 Semua pertanyaan soal ini selesai.</b></p><button class="btn" onclick="go(${cur+1})">${cur<S.length-1?'Soal berikutnya ➜':'Lihat hasil 🏆'}</button></section>`;
+  }
+  const m=t.msg||{ok:1,html:'<p>Mulai dari pertanyaan a. Bandingkan jumlah gambar pada pola pertama dan kedua!</p>'};
+  h+=`<section class="box ex ${m.ok?'':'bad'}" aria-live="polite"><h2>${m.ok?'💡 Penjelasan':'🤔 Coba lagi'}</h2>${m.html}</section>`;
+  stage.innerHTML=h;
+  fresh=null;
+}
+function go(i){cur=i;render();window.scrollTo({top:0,behavior:'smooth'})}
+function reset(){st.forEach(t=>{t.q=0;t.tries=[0,0,0];t.ok=[0,0,0];t.bad=[[],[],[]];t.msg=null});go(0)}
+
+function drop(v){
+  const s=S[cur],t=st[cur],q=t.q;
+  if(String(v)===String(s.ans[q])){
+    const r=document.querySelector('.slot.on')?.getBoundingClientRect();
+    t.ok[q]=1;t.q++;fresh=q;t.msg={ok:1,html:eqHtml(s,q)};
+    render();cheer(r,q);
+  } else {
+    t.tries[q]++;t.bad[q].push(String(v));
+    t.msg={ok:0,html:`<p>Belum tepat. ${s.hint[q]}</p>`};
+    render();
+  }
+}
+let actx,mute=false;
+function toggleSnd(){mute=!mute;$('#snd').textContent=mute?'🔇':'🔊'}
+function ding(big){
+  if(mute)return;
+  try{
+    actx=actx||new(window.AudioContext||window.webkitAudioContext)();
+    (big?[523,659,784,1047]:[659,880]).forEach((f,i)=>{
+      const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+i*.11;
+      o.type='triangle';o.frequency.value=f;
+      g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.35);
+      o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+.4);
+    });
+  }catch(e){}
+}
+const PR=['Benar! 🎉','Hebat! ⭐','Pintar! 👏','Keren! 🌟','Tepat sekali! 🥳'];
+function cheer(r,q){
+  ding(q==2);
+  const t=document.createElement('div');t.className='toast';t.textContent=q==2?'Soal selesai! 🏅':PR[Math.floor(Math.random()*PR.length)];
+  document.body.append(t);setTimeout(()=>t.remove(),1500);
+  if(r){
+    const x=r.left+r.width/2,y=r.top+r.height/2;
+    for(let i=0;i<18;i++){
+      const a=i/18*Math.PI*2,d=70+Math.random()*70,e=document.createElement('span');
+      e.className='sp';e.textContent=['✨','⭐','💫'][i%3];e.style.left=x+'px';e.style.top=y+'px';
+      e.style.setProperty('--dx',Math.cos(a)*d+'px');e.style.setProperty('--dy',Math.sin(a)*d+'px');
+      document.body.append(e);setTimeout(()=>e.remove(),1100);
+    }
+  }
+  burst(q==2?14:6);
+}
+function burst(n){
+  for(let i=0;i<n;i++){
+    const e=document.createElement('span');e.className='cf';e.textContent=['⭐','🎉','✨',S[cur].ic][i%4];
+    e.style.left=Math.random()*95+'vw';e.style.animationDelay=Math.random()*.5+'s';
+    document.body.append(e);setTimeout(()=>e.remove(),3000);
+  }
+}
+const slotAt=(x,y)=>document.elementFromPoint(x,y)?.closest('.slot.on');
+document.addEventListener('pointerdown',e=>{
+  const c=e.target.closest('#chips .chip');if(!c)return;
+  const r=c.getBoundingClientRect(),sx=e.clientX,sy=e.clientY;let moved=false,hov=null;
+  const g=c.cloneNode(true);g.classList.add('ghost');
+  const mv=ev=>{
+    if(!moved&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){moved=true;document.body.append(g);c.classList.add('lift')}
+    if(moved){g.style.left=ev.clientX-r.width/2+'px';g.style.top=ev.clientY-r.height/2+'px';
+      const t=slotAt(ev.clientX,ev.clientY);if(hov!==t){hov?.classList.remove('hov');t?.classList.add('hov');hov=t}}
+  };
+  const up=ev=>{
+    removeEventListener('pointermove',mv);g.remove();c.classList.remove('lift');hov?.classList.remove('hov');
+    if(moved){if(slotAt(ev.clientX,ev.clientY))drop(c.dataset.v)}
+    else{document.querySelectorAll('.chip.sel').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');sel=c.dataset.v}
+  };
+  addEventListener('pointermove',mv);addEventListener('pointerup',up,{once:true});
+});
+document.addEventListener('click',e=>{const sl=e.target.closest('.slot.on');if(sl&&sel!==null){const v=sel;sel=null;drop(v)}});
+document.addEventListener('keydown',e=>{
+  const c=e.target.closest?.('#chips .chip');
+  if(c&&(e.key=='Enter'||e.key==' ')){e.preventDefault();drop(c.dataset.v)}
+});
+
+// Versi cetak / PDF: semua soal beserta pembahasan
+$('#prt').innerHTML='<h1>Petualangan Pola Bilangan – Kelas 4</h1>'+S.map((s,i)=>
+ `<section><h2>Soal ${i+1} — ${s.t}</h2><p>${s.story}</p><ol type="a">${s.q.map((q,k)=>`<li>${q}</li>`).join('')}</ol>
+ <p><b>Pembahasan:</b></p><ul>${s.pb.map((p,k)=>`<li>${'abc'[k]}. ${p}</li>`).join('')}</ul></section>`).join('');
+render();
+</script>
+</body>
+</html>
